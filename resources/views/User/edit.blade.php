@@ -1,7 +1,7 @@
 @extends('main')
-@section('title', 'Update User')
-@section('breadcrumb', 'Update User')
-@section('page-title', 'Update User')
+@section('title', 'Edit User')
+@section('breadcrumb', 'Edit User')
+@section('page-title', 'Edit User')
 
 @section('content')
 <div class="container">

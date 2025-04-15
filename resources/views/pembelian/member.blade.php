@@ -53,6 +53,11 @@
 </div>
 
 <script>
+    const totalPrice = {{ $totalPrice }};
+
+    const totalBayarInput = document.getElementById('totalBayar');
+    totalBayarInput.value = new Intl.NumberFormat('id-ID').format(totalPrice);
+
     const memberStatus = document.getElementById('memberStatus');
     const phoneInput = document.getElementById('phoneInput');
     const phoneField = document.getElementById('phoneNumber');
@@ -75,10 +80,13 @@
         }
     });
 
-    // Format Total Bayar ke 90.000
-    document.getElementById('totalBayar').addEventListener('input', function (e) {
+    totalBayarInput.addEventListener('input', function (e) {
         let value = e.target.value.replace(/\D/g, '');
         e.target.value = new Intl.NumberFormat('id-ID').format(value);
     });
 </script>
+
+{{-- // Format dan set nilai ke input totalBayar
+const totalBayarInput = document.getElementById('totalBayar');
+totalBayarInput.value = new Intl.NumberFormat('id-ID').format(totalPrice); --}}
 @endsection

@@ -27,10 +27,15 @@ class PenjualanController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'total_bayar' => str_replace(['.', ','], '', $request->total_bayar),
+        ]);
+        
         $request->validate([
             'member' => 'required|in:non-member,member',
             'total_bayar' => 'required|numeric',
         ]);
+        
 
         $user = Auth::user();
         $carts = Cart::with('product')->get();
@@ -122,7 +127,8 @@ class PenjualanController extends Controller
             'totalPrice' => $totalPrice,
             'userName' => $userName,
             'kembalian' => $kembalian,
-            'invoiceNumber' => $invoiceNumber
+            'invoiceNumber' => $invoiceNumber,
+            'transactionId' => $transaction->id
         ]);
     }
 
@@ -136,6 +142,10 @@ class PenjualanController extends Controller
 
     public function checkMember(Request $request)
     {
+        $request->merge([
+            'total_bayar' => str_replace(['.', ','], '', $request->total_bayar),
+        ]);        
+
         $member = Members::where('phone_number', $request->phone_number)->first();
 
         if ($member && $request->name) {
@@ -203,7 +213,8 @@ class PenjualanController extends Controller
             'totalPrice' => $totalPrice,
             'userName' => $userName,
             'kembalian' => $kembalian,
-            'invoiceNumber' => $invoiceNumber
+            'invoiceNumber' => $invoiceNumber,
+            'transactionId' => $transaction->id
         ]);
     }
 
@@ -231,7 +242,7 @@ class PenjualanController extends Controller
             'cart_data' => 'required|json'
         ]);
 
-        Cart::truncate(); // <- FIX: pastikan kosong sebelum tambah baru
+        Cart::truncate();
 
         $cartItem = json_decode($request->cart_data, true);
 

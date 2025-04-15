@@ -6,7 +6,11 @@
 @section('content')
 <div class="container">
     <div class="mb-4">
-        <button class="btn btn-primary">Unduh</button>
+        {{-- <button class="btn btn-primary" type="button">
+            <a href="{{ route('formatpdf', $item->id) }}" class="text-white">Unduh Bukti</a>
+        </button> --}}
+        {{-- <button class="btn btn-primary">Unduh</button> --}}
+        <a href="{{ route('formatpdf', ['id' => $transactionId]) }}" class="btn btn-primary">Unduh</a>
         <button class="btn btn-secondary"><a href="{{ route('pembelians.index') }}" class="text-white text-decoration none" >Kembali</a></button>
     </div>
     <div class="card p-4 shadow-sm">
@@ -64,4 +68,57 @@
         </div>
     </div>
 </div>
+
+<script>
+    const totalPrice = {{ $totalPrice }};
+    const totalBayarInput = document.getElementById('totalBayar');
+    const kembalianInput = document.getElementById('kembalian');
+
+    totalBayarInput.value = new Intl.NumberFormat('id-ID').format(totalPrice);
+
+    function hitungKembalian() {
+        let bayarValue = totalBayarInput.value.replace(/\D/g, '');
+        let bayar = parseInt(bayarValue || '0');
+        let kembali = bayar - totalPrice;
+
+        kembalianInput.value = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(kembali);
+    }
+
+    totalBayarInput.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        e.target.value = new Intl.NumberFormat('id-ID').format(value);
+
+        hitungKembalian();
+    });
+
+    hitungKembalian();
+
+    const memberStatus = document.getElementById('memberStatus');
+    const phoneInput = document.getElementById('phoneInput');
+    const phoneField = document.getElementById('phoneNumber');
+    const memberNameGroup = document.getElementById('memberNameGroup');
+    const memberNameField = document.getElementById('memberName');
+
+    memberStatus.addEventListener('change', function () {
+        if (this.value === 'member') {
+            phoneInput.classList.remove('d-none');
+            memberNameGroup.classList.remove('d-none');
+            phoneField.required = true;
+            memberNameField.required = true;
+        } else {
+            phoneInput.classList.add('d-none');
+            memberNameGroup.classList.add('d-none');
+            phoneField.required = false;
+            memberNameField.required = false;
+            phoneField.value = '';
+            memberNameField.value = '';
+        }
+    });
+</script>
+
+
 @endsection

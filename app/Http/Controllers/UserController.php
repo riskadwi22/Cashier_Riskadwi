@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Products;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Selling;
@@ -131,16 +132,22 @@ class UserController extends Controller
         return redirect('/')->with('success', 'Berhasil logout');
     }
 
-    public function dashboard(Request $request)
+    public function dashboard()
     {
-        $today = Carbon::today();
-        $tomorrow = Carbon::tomorrow();
+        if (Auth::user()->role == 'admin') {
+            return view('dashboard', [
+                'totalProduk' => Products::count(), 
+                'totalUser' => User::count(), 
+                'totalTransaksi' => Selling::count(), 
+            ]);
+        }
 
-        $transaction = Selling::whereBetween('created_at', [$today, $tomorrow])->get();
-        $count = $transaction->count();
+        // Untuk bagian staff
+        $count = Selling::whereDate('created_at', now())->count();
+        $member = Selling::whereDate('created_at', now())->whereNotNull('member_id')->count();
+        $nonMember = Selling::whereDate('created_at', now())->whereNull('member_id')->count();
+        $updated = Selling::latest()->first();
 
-        $updated = Selling::orderBy('created_at', 'asc')->first();
-
-        return view('dashboard', compact('count','updated'));
+        return view('dashboard', compact('count', 'member', 'nonMember', 'updated'));
     }
 }

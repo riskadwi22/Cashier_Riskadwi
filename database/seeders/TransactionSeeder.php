@@ -22,7 +22,7 @@ class TransactionSeeder extends Seeder
         ]);
 
         DB::table('detail_transacts')->insert([
-            'transseaction_id' => 1,
+            'transaction_id' => 1,
             'product_id' => 1,
             'qty'=> 2,
             'created_at' => now(),
